@@ -1,2 +1,2 @@
 # chat
-Chatroom website with separate chat bot plugins, interfacing to web APIs.
+Chatroom website built in node.js.
