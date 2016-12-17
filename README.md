@@ -12,7 +12,7 @@ Chatroom website built in node.js.
 Body should take the following form:
 ```json
 {
-  "from": "user1"
+  "from": "user1",
   "content": "welcome to the world."
 }
 ```
