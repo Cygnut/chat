@@ -2,129 +2,129 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
-	
-	var usernameLs = 'username';
-	var user = null;
-	
-	$(function() {
-		
-		$("#content").keypress(handleContentKeyPress);
-		
-		findUsername();
-		
-		setInterval(refreshReceived, 500)
-	});
-	
-	function setUsername(u)
-	{
-		user = u;
-		
-		if (window.localStorage)
-			window.localStorage.setItem(usernameLs, u);
-		
-		$('#user').html('<b>' + u + '</b>');
-	}
-	
-	function findUsername()
-	{
-		// First try and get the username from localStorage:
-		var storedUsername = null;
-		
-		if (window.localStorage)
-			storedUsername = window.localStorage.getItem(usernameLs);
-		
-		// If we found it in localStorage, then use that.
-		if (storedUsername)
-			setUsername(storedUsername)
-		else	// Get an appropriate one from the server.
-		{
-			$.ajax({
-				type: "GET",
-				url: '/user',
-			})
-			.done(function(data) {
-				setUsername(data.user);
-			});
-		}
-	}
-	
-	function refreshReceived()
-	{
-		$.ajax({
-			type: "GET",
-			url: '/messages?begin=-25',	// only get the last 25 messages.
-		})
-		.done(function(data) {
-			
-			$('#received').html('');
-			
-			var text = '';
-			
-			for (var i=0; i<data.length; ++i)
-			{
-				var currentText = '';
-				
-				var datum = data[i];
-				var lines = datum.content.split('\n');
-				
-				currentText += '<p><b>' + datum.from + '</b>: ';
-				
-				if (lines.length === 1)
-					currentText += lines[0] + '<br/>';
-				else
-				{
-					currentText += '<br/>';
-					lines.forEach(function(line) {
-						currentText += line + '<br/>';
-					});
-				}
-				
-				currentText += '</p>';
-				
-				text += currentText;
-			}
-			
-			$('#received').html(text);
-			
-			// Scroll to the bottom
-			var d = document.getElementById('received');
-			d.scrollTop = d.scrollHeight;
-		});
-	}
-	
-	function handleContentKeyPress(e)
-	{
-		if (e.keyCode === 13)
-			sendMessage();
-	}
-	
-	function sendMessage()
-	{
-		$.ajax({
-			type: "POST",
-			url: '/send',
-			data: JSON.stringify({
-				from: user,
-				content: $('#content').val(),
-			}),
-			contentType: 'application/json'
-		});
-		
-		$('#content').val('');
-		
-		refreshReceived();
-	}
+    
+    var usernameLs = 'username';
+    var user = null;
+    
+    $(function() {
+        
+        $("#content").keypress(handleContentKeyPress);
+        
+        findUsername();
+        
+        setInterval(refreshReceived, 500)
+    });
+    
+    function setUsername(u)
+    {
+        user = u;
+        
+        if (window.localStorage)
+            window.localStorage.setItem(usernameLs, u);
+        
+        $('#user').html('<b>' + u + '</b>');
+    }
+    
+    function findUsername()
+    {
+        // First try and get the username from localStorage:
+        var storedUsername = null;
+        
+        if (window.localStorage)
+            storedUsername = window.localStorage.getItem(usernameLs);
+        
+        // If we found it in localStorage, then use that.
+        if (storedUsername)
+            setUsername(storedUsername)
+        else    // Get an appropriate one from the server.
+        {
+            $.ajax({
+                type: "GET",
+                url: '/user',
+            })
+            .done(function(data) {
+                setUsername(data.user);
+            });
+        }
+    }
+    
+    function refreshReceived()
+    {
+        $.ajax({
+            type: "GET",
+            url: '/messages?begin=-25',    // only get the last 25 messages.
+        })
+        .done(function(data) {
+            
+            $('#received').html('');
+            
+            var text = '';
+            
+            for (var i=0; i<data.length; ++i)
+            {
+                var currentText = '';
+                
+                var datum = data[i];
+                var lines = datum.content.split('\n');
+                
+                currentText += '<p><b>' + datum.from + '</b>: ';
+                
+                if (lines.length === 1)
+                    currentText += lines[0] + '<br/>';
+                else
+                {
+                    currentText += '<br/>';
+                    lines.forEach(function(line) {
+                        currentText += line + '<br/>';
+                    });
+                }
+                
+                currentText += '</p>';
+                
+                text += currentText;
+            }
+            
+            $('#received').html(text);
+            
+            // Scroll to the bottom
+            var d = document.getElementById('received');
+            d.scrollTop = d.scrollHeight;
+        });
+    }
+    
+    function handleContentKeyPress(e)
+    {
+        if (e.keyCode === 13)
+            sendMessage();
+    }
+    
+    function sendMessage()
+    {
+        $.ajax({
+            type: "POST",
+            url: '/send',
+            data: JSON.stringify({
+                from: user,
+                content: $('#content').val(),
+            }),
+            contentType: 'application/json'
+        });
+        
+        $('#content').val('');
+        
+        refreshReceived();
+    }
 </script>
 <style>
 #received {
-	height: 90%;
-	width: 100%;
-	overflow: auto;
+    height: 90%;
+    width: 100%;
+    overflow: auto;
 }
 
 #content {
-	width: 100%;
-	overflow: auto;
+    width: 100%;
+    overflow: auto;
 }
 </style>
 </head>
@@ -133,10 +133,10 @@
 <div id='received'></div>
 
 <div>
-	<p id='user'></p>
-	<!--<textarea id='content' rows='1'/></textarea><br/>-->
-	<input type="text" id='content'/>
-	<button type='button' onclick='sendMessage()'>Send</button>
+    <p id='user'></p>
+    <!--<textarea id='content' rows='1'/></textarea><br/>-->
+    <input type="text" id='content'/>
+    <button type='button' onclick='sendMessage()'>Send</button>
 </div>
 
 </form>
